@@ -1,4 +1,10 @@
 <div class="shell" [class.dark]="theme.isDark()">
+  @if (updateAvailable()) {
+    <div class="update-banner" role="alert">
+      <span>A new version of WealthLens is available.</span>
+      <button class="update-btn" type="button" (click)="applyUpdate()">Update Now</button>
+    </div>
+  }
   <!-- Sidebar — desktop -->
   <aside class="sidebar">
     <div class="sidebar-brand">
