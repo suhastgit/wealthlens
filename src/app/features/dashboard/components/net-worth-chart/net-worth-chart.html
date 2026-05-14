@@ -1,0 +1,11 @@
+<app-card title="Net Worth Over Time">
+  @if (hasData()) {
+    <div class="chart-container">
+      <canvas baseChart type="line" [data]="chartData()" [options]="chartOptions"> </canvas>
+    </div>
+  } @else {
+    <div class="chart-empty">
+      <p>No snapshots yet — take your first snapshot in Settings to start tracking.</p>
+    </div>
+  }
+</app-card>

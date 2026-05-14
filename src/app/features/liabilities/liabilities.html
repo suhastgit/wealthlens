@@ -1,0 +1,40 @@
+<div class="liabilities-page">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Liabilities</h1>
+      <p class="page-subtitle">Total: {{ totalLiabilities() }}</p>
+    </div>
+    <app-button variant="primary" (clicked)="openAddModal()"> + Add Liability </app-button>
+  </header>
+
+  <app-card>
+    @if (liabilities().length > 0) {
+      <div class="liability-list">
+        @for (liability of liabilities(); track liability.id) {
+          <app-liability-item
+            [liability]="liability"
+            (edited)="openEditModal($event)"
+            (deleted)="onDeleted($event)"
+          />
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <p>No liabilities yet. Add your first liability to get started.</p>
+        <app-button variant="primary" (clicked)="openAddModal()"> + Add Liability </app-button>
+      </div>
+    }
+  </app-card>
+</div>
+
+<app-modal
+  [isOpen]="isModalOpen()"
+  [title]="editingLiability() ? 'Edit Liability' : 'Add Liability'"
+  (closed)="closeModal()"
+>
+  <app-liability-form
+    [liability]="editingLiability()"
+    (saved)="onSaved($event)"
+    (cancelled)="closeModal()"
+  />
+</app-modal>

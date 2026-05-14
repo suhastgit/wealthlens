@@ -1,0 +1,138 @@
+<div class="settings-page">
+  <header class="page-header">
+    <h1 class="page-title">Settings</h1>
+    <p class="page-subtitle">Manage your data and preferences</p>
+  </header>
+
+  <!-- Theme -->
+  <app-card title="Appearance">
+    <div class="settings-row">
+      <div class="settings-info">
+        <p class="settings-label">Dark Mode</p>
+        <p class="settings-description">Toggle between light and dark theme</p>
+      </div>
+      <app-button
+        [variant]="theme.isDark() ? 'secondary' : 'primary'"
+        (clicked)="theme.toggleDark()"
+      >
+        {{ theme.isDark() ? '☀️ Light Mode' : '🌙 Dark Mode' }}
+      </app-button>
+    </div>
+  </app-card>
+
+  <!-- Snapshot -->
+  <app-card title="Net Worth Snapshot">
+    <div class="settings-row">
+      <div class="settings-info">
+        <p class="settings-label">Take Snapshot</p>
+        <p class="settings-description">
+          Record your current net worth, assets and liabilities for trend tracking
+        </p>
+      </div>
+      <app-button variant="primary" (clicked)="takeSnapshot()">
+        {{ snapshotTaken() ? '✓ Snapshot Taken' : 'Take Snapshot' }}
+      </app-button>
+    </div>
+
+    @if (snapshots().length > 0) {
+      <div class="snapshot-list">
+        <p class="snapshot-list-title">Snapshot History</p>
+        @for (snapshot of snapshots(); track snapshot.id) {
+          <div class="snapshot-item">
+            <span class="snapshot-date">{{ formatDate(snapshot.date) }}</span>
+            <span class="snapshot-value">
+              Net Worth: {{ snapshot.netWorth | number: '1.0-0' }}
+            </span>
+          </div>
+        }
+      </div>
+    }
+  </app-card>
+
+  <!-- Export -->
+  <app-card title="Export Data">
+    <p class="settings-description">Download your data as CSV files</p>
+    <div class="button-group">
+      <app-button variant="secondary" (clicked)="exportAssets()"> Export Assets </app-button>
+      <app-button variant="secondary" (clicked)="exportLiabilities()">
+        Export Liabilities
+      </app-button>
+      <app-button variant="secondary" (clicked)="exportSnapshots()"> Export Snapshots </app-button>
+    </div>
+  </app-card>
+
+  <!-- Import -->
+  <app-card title="Import Data">
+    <p class="settings-description">
+      Import assets or liabilities from a previously exported CSV file
+    </p>
+
+    @if (importSuccess()) {
+      <p class="import-success" role="status">{{ importSuccess() }}</p>
+    }
+    @if (importError()) {
+      <p class="import-error" role="alert">{{ importError() }}</p>
+    }
+
+    <div class="import-group">
+      <div class="import-row">
+        <span class="settings-label">Assets CSV</span>
+        <label class="file-label" for="import-assets">
+          Choose File
+          <input
+            id="import-assets"
+            type="file"
+            accept=".csv"
+            class="file-input"
+            (change)="onImportAssets($event)"
+          />
+        </label>
+      </div>
+      <div class="import-row">
+        <span class="settings-label">Liabilities CSV</span>
+        <label class="file-label" for="import-liabilities">
+          Choose File
+          <input
+            id="import-liabilities"
+            type="file"
+            accept=".csv"
+            class="file-input"
+            (change)="onImportLiabilities($event)"
+          />
+        </label>
+      </div>
+    </div>
+  </app-card>
+
+  <!-- Danger Zone -->
+  <app-card title="Danger Zone">
+    <div class="settings-row">
+      <div class="settings-info">
+        <p class="settings-label">Clear All Data</p>
+        <p class="settings-description">
+          Permanently delete all assets, liabilities and snapshots from this device
+        </p>
+      </div>
+      <app-button variant="danger" (clicked)="isClearModalOpen.set(true)">
+        Clear All Data
+      </app-button>
+    </div>
+  </app-card>
+</div>
+
+<!-- Confirm clear modal -->
+<app-modal
+  [isOpen]="isClearModalOpen()"
+  title="Clear All Data"
+  [hasFooter]="true"
+  (closed)="isClearModalOpen.set(false)"
+>
+  <p>
+    This will permanently delete all your assets, liabilities and snapshots. This action cannot be
+    undone.
+  </p>
+  <div slot="footer">
+    <app-button variant="secondary" (clicked)="isClearModalOpen.set(false)"> Cancel </app-button>
+    <app-button variant="danger" (clicked)="confirmClear()"> Yes, Clear Everything </app-button>
+  </div>
+</app-modal>

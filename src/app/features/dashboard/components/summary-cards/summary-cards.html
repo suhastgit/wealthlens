@@ -1,0 +1,24 @@
+<div class="summary-cards">
+  <app-card>
+    <div class="summary-card">
+      <p class="summary-label">Net Worth</p>
+      <p class="summary-value" [class.positive]="isPositive()" [class.negative]="!isPositive()">
+        {{ netWorth() }}
+      </p>
+    </div>
+  </app-card>
+
+  <app-card>
+    <div class="summary-card">
+      <p class="summary-label">Total Assets</p>
+      <p class="summary-value positive">{{ totalAssets() }}</p>
+    </div>
+  </app-card>
+
+  <app-card>
+    <div class="summary-card">
+      <p class="summary-label">Total Liabilities</p>
+      <p class="summary-value negative">{{ totalLiabilities() }}</p>
+    </div>
+  </app-card>
+</div>

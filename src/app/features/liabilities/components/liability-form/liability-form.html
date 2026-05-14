@@ -1,0 +1,53 @@
+<form (ngSubmit)="onSubmit()" #form="ngForm">
+  <div class="form-fields">
+    <app-input
+      label="Liability Name"
+      placeholder="e.g. Home Mortgage"
+      [required]="true"
+      [error]="error()"
+      [value]="name()"
+      (valueChange)="name.set($event)"
+    />
+
+    <div class="form-field">
+      <label class="form-label" for="liability-category">Category</label>
+      <select
+        id="liability-category"
+        class="form-select"
+        [value]="category()"
+        (change)="category.set($any($event.target).value)"
+      >
+        @for (cat of categories; track cat) {
+          <option [value]="cat">{{ cat }}</option>
+        }
+      </select>
+    </div>
+
+    <app-input
+      label="Amount Owed (AUD)"
+      type="number"
+      placeholder="e.g. 450000"
+      [required]="true"
+      [value]="value()"
+      (valueChange)="value.set($event)"
+    />
+
+    <app-input
+      label="Notes"
+      placeholder="Optional notes"
+      [value]="notes()"
+      (valueChange)="notes.set($event)"
+    />
+
+    @if (error()) {
+      <p class="form-error" role="alert">{{ error() }}</p>
+    }
+  </div>
+
+  <div class="form-actions">
+    <app-button variant="secondary" type="button" (clicked)="cancelled.emit()"> Cancel </app-button>
+    <app-button variant="primary" type="submit">
+      {{ liability() ? 'Update Liability' : 'Add Liability' }}
+    </app-button>
+  </div>
+</form>

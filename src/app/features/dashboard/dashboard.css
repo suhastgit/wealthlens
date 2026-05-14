@@ -1,0 +1,76 @@
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.dashboard-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dashboard-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.dashboard-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.summary-label {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.positive {
+  color: var(--color-success);
+}
+.negative {
+  color: var(--color-danger);
+}
+
+.dashboard-charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+
+.chart-container {
+  height: 300px;
+}
+
+.chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
