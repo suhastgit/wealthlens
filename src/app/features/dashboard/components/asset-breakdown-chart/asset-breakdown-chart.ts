@@ -1,12 +1,12 @@
 import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration } from 'chart.js';
+import { ChartConfiguration, DoughnutController } from 'chart.js';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 import { WealthService } from '../../../../services/wealth.service';
 import { calcAssetsByCategory } from '../../../../utils';
 import { Card } from '../../../../components';
 
-Chart.register(ArcElement, Tooltip, Legend);
+Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
 @Component({
   selector: 'app-asset-breakdown-chart',
