@@ -1,0 +1,11 @@
+<app-card title="Asset Breakdown">
+  @if (hasData()) {
+    <div class="chart-container">
+      <canvas baseChart type="doughnut" [data]="chartData()" [options]="chartOptions"> </canvas>
+    </div>
+  } @else {
+    <div class="chart-empty">
+      <p>No assets yet — add your first asset to see the breakdown.</p>
+    </div>
+  }
+</app-card>

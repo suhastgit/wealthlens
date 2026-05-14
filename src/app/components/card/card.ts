@@ -26,6 +26,7 @@ import { Component, ChangeDetectionStrategy, input } from '@angular/core';
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-sm);
         overflow: hidden;
+        margin: 5px;
       }
       .card-raised {
         background: var(--color-surface-raised);
