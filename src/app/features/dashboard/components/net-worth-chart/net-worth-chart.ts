@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration } from 'chart.js';
+import { ChartConfiguration, LineController } from 'chart.js';
 import {
   Chart,
   CategoryScale,
@@ -16,7 +16,16 @@ import { calcNetWorthTrend } from '../../../../utils';
 import { formatDate } from '../../../../utils';
 import { Card } from '../../../../components';
 
-Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
+Chart.register(
+  LineController,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+);
 
 @Component({
   selector: 'app-net-worth-chart',
