@@ -1,0 +1,36 @@
+<div class="assets-page">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Assets</h1>
+      <p class="page-subtitle">Total: {{ totalAssets() }}</p>
+    </div>
+    <app-button variant="primary" (clicked)="openAddModal()"> + Add Asset </app-button>
+  </header>
+
+  <app-card>
+    @if (assets().length > 0) {
+      <div class="asset-list">
+        @for (asset of assets(); track asset.id) {
+          <app-asset-item
+            [asset]="asset"
+            (edited)="openEditModal($event)"
+            (deleted)="onDeleted($event)"
+          />
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <p>No assets yet. Add your first asset to get started.</p>
+        <app-button variant="primary" (clicked)="openAddModal()"> + Add Asset </app-button>
+      </div>
+    }
+  </app-card>
+</div>
+
+<app-modal
+  [isOpen]="isModalOpen()"
+  [title]="editingAsset() ? 'Edit Asset' : 'Add Asset'"
+  (closed)="closeModal()"
+>
+  <app-asset-form [asset]="editingAsset()" (saved)="onSaved($event)" (cancelled)="closeModal()" />
+</app-modal>

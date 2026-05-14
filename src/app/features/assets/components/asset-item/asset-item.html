@@ -1,0 +1,31 @@
+<div class="asset-item">
+  <div class="asset-info">
+    <div class="asset-name-row">
+      <span class="asset-name">{{ asset().name }}</span>
+      <app-badge variant="info">{{ asset().category }}</app-badge>
+    </div>
+    @if (asset().notes) {
+      <p class="asset-notes">{{ asset().notes }}</p>
+    }
+  </div>
+
+  <div class="asset-actions">
+    <span class="asset-value">{{ formattedValue() }}</span>
+    <app-button
+      variant="ghost"
+      size="sm"
+      ariaLabel="Edit {{ asset().name }}"
+      (clicked)="edited.emit(asset())"
+    >
+      Edit
+    </app-button>
+    <app-button
+      variant="danger"
+      size="sm"
+      ariaLabel="Delete {{ asset().name }}"
+      (clicked)="deleted.emit(asset().id)"
+    >
+      Delete
+    </app-button>
+  </div>
+</div>
