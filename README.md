@@ -1,59 +1,218 @@
-# Wealthlens
+# 💎 WealthLens
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.9.
+A privacy-first net worth tracker built for Australians. All data lives in your browser — no account, no backend, no cloud.
 
-## Development server
+![WealthLens Dashboard](screenshots/wealthlens-dashboard.png)
 
-To start a local development server, run:
+---
+
+## Features
+
+- **Net worth tracking** — assets minus liabilities, calculated in real time
+- **Asset management** — property, savings, superannuation, vehicle, investment, other
+- **Liability management** — mortgage, personal loan, car loan, credit card, HECS, other
+- **Net worth over time** — area chart built from manual snapshots
+- **Asset breakdown** — doughnut chart by category
+- **CSV export and import** — full data portability
+- **Dark mode** — system preference detected, manual override persisted
+- **PWA** — installable, works offline
+- **AUD focused** — all values formatted with `en-AU` locale
+
+---
+
+## Screenshots
+
+| Dashboard                                          | Assets                                          | Liabilities                                              |
+| -------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------------- |
+| ![Dashboard](screenshots/wealthlens-dashboard.png) | ![Assets](screenshots/wealthlens-add-asset.png) | ![Liabilities](screenshots/wealthlens-add-liability.png) |
+
+| Settings                                         | Settings(contd.)                                   | Mobile                                       |
+| ------------------------------------------------ | -------------------------------------------------- | -------------------------------------------- |
+| ![Settings](screenshots/wealthlens-settings.png) | ![Dark Mode](screenshots/wealthlens-settings2.png) | ![Mobile](screenshots/wealthlens-mobile.png) |
+
+---
+
+## Tech Stack
+
+| Concern    | Choice                                          |
+| ---------- | ----------------------------------------------- |
+| Framework  | Angular 21 — standalone, zoneless               |
+| Language   | TypeScript strict mode                          |
+| State      | Signals — `signal()`, `computed()`, `effect()`  |
+| Forms      | Angular Signal Forms (experimental)             |
+| Styling    | Tailwind CSS v4 + CSS custom properties         |
+| Charting   | Chart.js + ng2-charts                           |
+| CSV        | PapaParse                                       |
+| Testing    | Vitest                                          |
+| Linting    | angular-eslint + typescript-eslint              |
+| Formatting | Prettier                                        |
+| Git hooks  | Husky + lint-staged + Commitlint                |
+| PWA        | @angular/pwa + Angular Service Worker           |
+| Storage    | Abstract class DI + LocalStorage implementation |
+
+---
+
+## Architecture
+
+### Folder structure
+
+```aiexclude
+
+src/
+├── app/
+│   ├── components/         # Reusable UI — Button, Card, Modal, AppInput, Badge
+│   ├── features/
+│   │   ├── dashboard/      # Net worth summary, charts
+│   │   ├── assets/         # Asset list, add, edit, delete
+│   │   ├── liabilities/    # Liability list, add, edit, delete
+│   │   └── settings/       # Export, import, snapshot, theme, clear
+│   ├── layout/
+│   │   └── shell/          # Sidebar + mobile bottom nav
+│   ├── services/
+│   │   ├── storage.service.ts        # Abstract StorageService
+│   │   ├── local-storage.service.ts  # LocalStorage implementation
+│   │   ├── wealth.service.ts         # Signal-based state
+│   │   └── theme.service.ts          # Dark mode
+│   ├── tokens/             # InjectionTokens for config and storage keys
+│   ├── types/              # TypeScript interfaces and types
+│   └── utils/              # Pure functions — formatters, calculations, csv
+└── public/
+├── manifest.webmanifest
+└── icons/
+```
+
+### Design principles
+
+- **SOLID** — single responsibility per service, open for extension via DI
+- **Program to abstractions** — `StorageService` abstract class, swap implementations without touching components
+- **Signals-first** — no RxJS in application code, all state via `signal()` and `computed()`
+- **OnPush everywhere** — all components use `ChangeDetectionStrategy.OnPush`
+- **No any** — TypeScript strict mode enforced throughout
+- **Accessible** — proper labels, ARIA attributes, keyboard navigation
+
+### Storage abstraction
+
+```typescript
+// Swap LocalStorage for GoogleDrive by changing one line in app.config.ts
+{
+  provide: StorageService,
+  useClass: LocalStorageService, // → GoogleDriveService
+}
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 22+
+- npm 10+
+- Angular CLI 21+
+
+### Installation
+
+```bash
+git clone https://github.com/suhastgit/wealthlens.git
+cd wealthlens
+npm install
+```
+
+### Development
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open `http://localhost:4200`
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+### Production build
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Output in `dist/wealthlens/browser/`
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### Tests
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Lint
 
 ```bash
-ng e2e
+ng lint
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## Git workflow
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```aiexclude
+main          ← stable releases only
+└── develop   ← integration branch
+└── feature/N-name  ← one branch per feature
+```
+
+- Conventional Commits enforced via Commitlint
+- Pre-commit: ESLint + Prettier via lint-staged
+- Pre-push: blocks direct pushes to `main`
+- `--no-ff` merges preserve branch history
+
+---
+
+## Data model
+
+```typescript
+interface Asset {
+  id: string;
+  name: string;
+  category: 'property' | 'savings' | 'superannuation' | 'vehicle' | 'investment' | 'other';
+  value: number;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Liability {
+  id: string;
+  name: string;
+  category: 'mortgage' | 'personal-loan' | 'car-loan' | 'credit-card' | 'hecs' | 'other';
+  value: number;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Snapshot {
+  id: string;
+  date: string;
+  netWorth: number;
+  totalAssets: number;
+  totalLiabilities: number;
+}
+```
+
+---
+
+## Privacy
+
+All data is stored exclusively in your browser's `localStorage`. Nothing is transmitted to any server. Clearing your browser data will erase your WealthLens data — use the CSV export in Settings to back up regularly.
+
+---
+
+## Future Features
+
+- [ ] Google Drive sync adapter
+- [ ] Multiple portfolios
+- [ ] Target net worth goal tracking
+- [ ] Recurring liability tracking (repayment schedules)
+- [ ] Category-level budget alerts
+
+---
+
+## License
+
+MIT
