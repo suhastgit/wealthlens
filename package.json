@@ -20,6 +20,7 @@
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
+    "papaparse": "^5.5.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -30,6 +31,7 @@
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
     "@eslint/js": "^10.0.1",
+    "@types/papaparse": "^5.5.2",
     "angular-eslint": "21.4.0",
     "eslint": "^10.3.0",
     "husky": "^9.1.7",
