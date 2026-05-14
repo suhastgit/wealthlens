@@ -1,0 +1,53 @@
+<form (ngSubmit)="onSubmit()" #form="ngForm">
+  <div class="form-fields">
+    <app-input
+      label="Asset Name"
+      placeholder="e.g. Family Home"
+      [required]="true"
+      [error]="error()"
+      [value]="name()"
+      (valueChange)="name.set($event)"
+    />
+
+    <div class="form-field">
+      <label class="form-label" for="category">Category</label>
+      <select
+        id="category"
+        class="form-select"
+        [value]="category()"
+        (change)="category.set($any($event.target).value)"
+      >
+        @for (cat of categories; track cat) {
+          <option [value]="cat">{{ cat }}</option>
+        }
+      </select>
+    </div>
+
+    <app-input
+      label="Value (AUD)"
+      type="number"
+      placeholder="e.g. 850000"
+      [required]="true"
+      [value]="value()"
+      (valueChange)="value.set($event)"
+    />
+
+    <app-input
+      label="Notes"
+      placeholder="Optional notes"
+      [value]="notes()"
+      (valueChange)="notes.set($event)"
+    />
+
+    @if (error()) {
+      <p class="form-error" role="alert">{{ error() }}</p>
+    }
+  </div>
+
+  <div class="form-actions">
+    <app-button variant="secondary" type="button" (clicked)="cancelled.emit()"> Cancel </app-button>
+    <app-button variant="primary" type="submit">
+      {{ asset() ? 'Update Asset' : 'Add Asset' }}
+    </app-button>
+  </div>
+</form>

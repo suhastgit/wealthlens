@@ -5,6 +5,7 @@ import {
   output,
   signal,
   forwardRef,
+  effect,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -14,7 +15,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => Input),
+      useExisting: forwardRef(() => AppInput),
       multi: true,
     },
   ],
@@ -37,7 +38,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
         [attr.aria-describedby]="hint() ? inputId() + '-hint' : null"
         [attr.aria-invalid]="error() ? true : null"
         [class]="inputClasses()"
-        [value]="value()"
+        [value]="internalValue()"
         (input)="onInput($event)"
         (blur)="onTouched()"
       />
@@ -56,7 +57,6 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
         flex-direction: column;
         gap: 0.375rem;
       }
-
       .input-label {
         font-size: 0.875rem;
         font-weight: 500;
@@ -66,7 +66,6 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
         color: var(--color-danger);
         margin-left: 0.25rem;
       }
-
       .input-field {
         width: 100%;
         padding: 0.5rem 0.75rem;
@@ -97,7 +96,6 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       .input-field-error:focus {
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 20%, transparent);
       }
-
       .input-hint {
         font-size: 0.75rem;
         color: var(--color-text-muted);
@@ -109,7 +107,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     `,
   ],
 })
-export class Input implements ControlValueAccessor {
+export class AppInput implements ControlValueAccessor {
   readonly inputId = input<string>(`input-${Math.random().toString(36).slice(2, 7)}`);
   readonly label = input<string>('');
   readonly type = input<string>('text');
@@ -117,10 +115,12 @@ export class Input implements ControlValueAccessor {
   readonly hint = input<string>('');
   readonly error = input<string>('');
   readonly required = input<boolean>(false);
+  readonly value = input<string>('');
 
   readonly valueChange = output<string>();
 
-  protected readonly value = signal<string>('');
+  // internal signal that tracks the actual displayed value
+  protected readonly internalValue = signal<string>('');
   protected readonly isDisabled = signal<boolean>(false);
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -128,19 +128,26 @@ export class Input implements ControlValueAccessor {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   protected onTouched: () => void = () => {};
 
+  constructor() {
+    // sync internalValue whenever the value input changes
+    effect(() => {
+      this.internalValue.set(this.value());
+    });
+  }
+
   protected inputClasses(): string {
     return `input-field${this.error() ? ' input-field-error' : ''}`;
   }
 
   protected onInput(event: Event): void {
     const val = (event.target as HTMLInputElement).value;
-    this.value.set(val);
+    this.internalValue.set(val);
     this.onChange(val);
     this.valueChange.emit(val);
   }
 
   writeValue(value: string): void {
-    this.value.set(value ?? '');
+    this.internalValue.set(value ?? '');
   }
 
   registerOnChange(fn: (value: string) => void): void {
