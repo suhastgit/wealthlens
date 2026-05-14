@@ -1,0 +1,31 @@
+<div class="liability-item">
+  <div class="liability-info">
+    <div class="liability-name-row">
+      <span class="liability-name">{{ liability().name }}</span>
+      <app-badge variant="warning">{{ liability().category }}</app-badge>
+    </div>
+    @if (liability().notes) {
+      <p class="liability-notes">{{ liability().notes }}</p>
+    }
+  </div>
+
+  <div class="liability-actions">
+    <span class="liability-value">{{ formattedValue() }}</span>
+    <app-button
+      variant="ghost"
+      size="sm"
+      [ariaLabel]="'Edit ' + liability().name"
+      (clicked)="edited.emit(liability())"
+    >
+      Edit
+    </app-button>
+    <app-button
+      variant="danger"
+      size="sm"
+      [ariaLabel]="'Delete ' + liability().name"
+      (clicked)="deleted.emit(liability().id)"
+    >
+      Delete
+    </app-button>
+  </div>
+</div>
