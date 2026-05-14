@@ -19,6 +19,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/liabilities/liabilities').then((m) => m.Liabilities),
   },
   {
+    path: 'settings',
+    loadComponent: () => import('./features/settings/settings').then((m) => m.Settings),
+  },
+  {
     path: '**',
     redirectTo: 'dashboard',
   },
