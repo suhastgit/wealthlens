@@ -1,0 +1,55 @@
+<div class="shell" [class.dark]="theme.isDark()">
+  <!-- Sidebar — desktop -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">💎</span>
+      <span class="brand-name">WealthLens</span>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      @for (item of navItems; track item.path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="nav-link-active"
+          class="nav-link"
+          [attr.aria-label]="item.label"
+        >
+          <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <button
+        class="theme-toggle"
+        type="button"
+        [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+        (click)="theme.toggleDark()"
+      >
+        <span aria-hidden="true">{{ theme.isDark() ? '☀️' : '🌙' }}</span>
+        <span>{{ theme.isDark() ? 'Light Mode' : 'Dark Mode' }}</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <router-outlet />
+  </main>
+
+  <!-- Bottom tab bar — mobile -->
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    @for (item of navItems; track item.path) {
+      <a
+        [routerLink]="item.path"
+        routerLinkActive="bottom-nav-link-active"
+        class="bottom-nav-link"
+        [attr.aria-label]="item.label"
+      >
+        <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span>
+        <span class="bottom-nav-label">{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+</div>
